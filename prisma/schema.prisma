@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum RoomType {
+  LIVING_ROOM
+  KITCHEN
+  DINING_ROOM
+  BEDROOM
+  BATHROOM
+  OFFICE
+  GARAGE
+  HALLWAY
+  OTHER
+}
+
+enum ItemCondition {
+  NEW
+  EXCELLENT
+  GOOD
+  FAIR
+  POOR
+}
+
+enum ItemCategory {
+  FURNITURE
+  ELECTRONICS
+  APPLIANCES
+  CLOTHING
+  JEWELRY
+  ART
+  TOOLS
+  SPORTS
+  BOOKS
+  KITCHENWARE
+  OTHER
+}
+
+enum AttachmentKind {
+  PHOTO
+  RECEIPT
+}
+
+model User {
+  id            String     @id @default(cuid())
+  name          String
+  email         String     @unique
+  emailVerified Boolean    @default(false)
+  image         String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  properties    Property[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+}
+
+model Property {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  address   String?
+  notes     String?
+  currency  String     @default("GBP")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  floorPlan FloorPlan?
+  rooms     Room[]
+
+  @@index([userId])
+}
+
+model FloorPlan {
+  id         String   @id @default(cuid())
+  propertyId String   @unique
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  version    Int      @default(1)
+  units      String   @default("mm")
+  geometry   Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Room {
+  id        String          @id @default(cuid())
+  propertyId String
+  property  Property        @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  name      String
+  type      RoomType        @default(OTHER)
+  sortOrder Int             @default(0)
+  areaSqM   Float?
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  items     InventoryItem[]
+
+  @@index([propertyId])
+}
+
+model InventoryItem {
+  id                     String         @id @default(cuid())
+  roomId                 String
+  room                   Room           @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  name                   String
+  category               ItemCategory   @default(OTHER)
+  quantity               Int            @default(1)
+  purchasePricePence     Int?
+  currentValuePence      Int?
+  replacementValuePence  Int            @default(0)
+  purchaseDate           DateTime?
+  condition              ItemCondition  @default(GOOD)
+  notes                  String?
+  serialNumber           String?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  attachments            Attachment[]
+
+  @@index([roomId])
+  @@index([name])
+  @@index([category])
+}
+
+model Attachment {
+  id              String         @id @default(cuid())
+  inventoryItemId String
+  inventoryItem   InventoryItem  @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+  kind            AttachmentKind
+  storageKey      String
+  mimeType        String
+  sizeBytes       Int
+  createdAt       DateTime       @default(now())
+
+  @@index([inventoryItemId])
+}

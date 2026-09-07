@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: homespace
+          POSTGRES_PASSWORD: homespace
+          POSTGRES_DB: homespace
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U homespace -d homespace"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://homespace:homespace@localhost:5433/homespace?schema=public
+      BETTER_AUTH_SECRET: ci-secret-change-me-in-production-32
+      BETTER_AUTH_URL: http://127.0.0.1:3000
+      NEXT_PUBLIC_APP_URL: http://127.0.0.1:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install
+        run: pnpm install
+      - name: Generate Prisma client
+        run: pnpm db:generate
+      - name: Migrate
+        run: pnpm exec prisma migrate deploy
+      - name: Biome
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Unit tests
+        run: pnpm test
+      - name: Build
+        run: pnpm build
+      - name: Seed
+        run: pnpm db:seed
+      - name: Install Playwright
+        run: pnpm exec playwright install --with-deps chromium
+      - name: E2E
+        run: pnpm test:e2e

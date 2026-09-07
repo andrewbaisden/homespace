@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f3eee6;
+  --foreground: #1f2a24;
+  --card: #fbf8f2;
+  --card-foreground: #1f2a24;
+  --primary: #3d5a4a;
+  --primary-foreground: #f7f4ef;
+  --secondary: #e7dfd2;
+  --secondary-foreground: #1f2a24;
+  --muted: #ebe4d8;
+  --muted-foreground: #5c675f;
+  --accent: #e7dfd2;
+  --accent-foreground: #1f2a24;
+  --destructive: #9b3d3d;
+  --destructive-foreground: #fff7f7;
+  --border: #d7cdb8;
+  --input: #d7cdb8;
+  --ring: #3d5a4a;
+  --surface: #f7f3ec;
+  --radius: 0.75rem;
+  --font-sans: "Source Sans 3", "Segoe UI", sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+  --radius-lg: var(--radius);
+}
+
+* {
+  border-color: var(--border);
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(61, 90, 74, 0.08), transparent 40%),
+    linear-gradient(180deg, #f7f3ec 0%, #efe7db 100%);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

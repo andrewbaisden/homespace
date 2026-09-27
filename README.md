@@ -1,27 +1,37 @@
 # HomeSpace
 
-Create or import a clean 2D floor plan, explore an interactive 3D dollhouse, and manage room inventory with replacement-value totals.
+See your home as a living inventory. Draw a floor plan, walk the rooms in 3D, and keep a clear record of what you own and what it would cost to replace.
 
-![HomeSpace 3D property viewer](docs/homespace.png)
+[![Build](https://github.com/andrewbaisden/homespace/actions/workflows/ci.yml/badge.svg)](https://github.com/andrewbaisden/homespace/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/package-json/v/andrewbaisden/homespace?label=release&color=3d5a4a)](https://github.com/andrewbaisden/homespace/blob/main/package.json)
+[![License](https://img.shields.io/badge/license-all%20rights%20reserved-c4b8a5)](#license-and-responsible-use)
 
-## Features
+<p align="center">
+  <img src="docs/homespace.png" alt="HomeSpace 3D property view: a dollhouse floor plan with the living room selected and a replacement total of £5,100" width="920" />
+</p>
 
-- Email/password authentication (Better Auth)
-- Property and room management
-- Orthogonal 2D floor-plan editor (walls, doors, windows, room areas)
-- JSON floor-plan import/export
-- Interactive 3D property viewer with room selection
-- Inventory CRUD, search/filters, and valuation totals
-- CSV + printable insurance-style inventory report
-- Demo seed property: **12 Example Road**
-- Vitest, Playwright, Biome, GitHub Actions
-- Sentry + PostHog hooks (optional via env)
+## What it does
 
-## Stack
+HomeSpace is a private home inventory for a single household. You sketch an orthogonal floor plan, open the same plan as an interactive dollhouse, and attach belongings to each room. Totals roll up from the replacement value you enter, so a room, a floor, or the whole property can be read at a glance.
 
-Next.js 16 App Router · React · TypeScript · Tailwind · shadcn-style UI · Zod · React Hook Form · Zustand · TanStack Query · PostgreSQL · Prisma · Better Auth · Konva · React Three Fiber · Vitest · Playwright · Biome
+It is built for the practical jobs around a home record: knowing what is in each room, exporting a list, and printing a summary you can keep with your paperwork. Figures stay labelled as your estimates.
 
-## Setup
+## Highlights
+
+- **Floor plans.** Draw walls, doors, windows, and room areas, then import or export the plan as JSON.
+- **3D dollhouse.** Orbit, zoom, and select a room to open its inventory.
+- **Inventory.** Add items, search and filter them, and see replacement totals in pounds.
+- **Reports.** Download a CSV or print an insurance-style inventory summary.
+- **Your account.** Sign in with email and password. Each property belongs to the account that created it.
+- **A place to start.** The local seed includes a demo home at **12 Example Road**.
+
+## Getting started
+
+You need:
+
+- [Node.js](https://nodejs.org/) 22
+- [pnpm](https://pnpm.io/) 12
+- [Docker](https://www.docker.com/), for the local Postgres database
 
 ```bash
 pnpm install
@@ -35,45 +45,34 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-### Demo credentials
+Postgres is published on host port **5433**, so it can run beside another Postgres already using 5432.
+
+### Try the demo
+
+After seeding, sign in with:
 
 - Email: `demo@homespace.app`
 - Password: `demopassword`
 
-> Local Docker Postgres is mapped to **host port 5433** to avoid clashes with a system Postgres on 5432.
+Use this account only on your machine. It is a sample household, not a place to store a real inventory.
 
-## Environment variables
+## Documentation
 
-See [`.env.example`](.env.example).
-
-| Variable | Purpose |
+| Guide | What it covers |
 | --- | --- |
-| `DATABASE_URL` | PostgreSQL connection string |
-| `BETTER_AUTH_SECRET` | Auth signing secret |
-| `BETTER_AUTH_URL` / `NEXT_PUBLIC_APP_URL` | App URL |
-| `NEXT_PUBLIC_POSTHOG_*` | Optional product analytics |
-| `SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN` | Optional error tracking |
-| `BLOB_READ_WRITE_TOKEN` | Optional Vercel Blob uploads |
+| [Development](DEVELOPMENT.md) | Environment variables, scripts, tests, and deployment |
+| [Architecture](ARCHITECTURE.md) | How the app is structured |
+| [Decisions](DECISIONS.md) | Why the main technical choices were made |
+| [Testing](TESTING.md) | Unit, component, and end-to-end tests |
 
-## Scripts
+## License and responsible use
 
-| Command | Description |
-| --- | --- |
-| `pnpm dev` | Start Next.js |
-| `pnpm build` / `pnpm start` | Production build/serve |
-| `pnpm lint` / `pnpm typecheck` | Quality gates |
-| `pnpm test` | Unit + component tests |
-| `pnpm test:e2e` | Playwright E2E |
-| `pnpm db:up` / `pnpm db:migrate` / `pnpm db:seed` | Database |
+Copyright © 2026 Andrew. All rights reserved.
 
-## Deployment
+This repository does not grant a licence to copy, modify, or redistribute the software. A public licence file will be added here if that changes.
 
-Deploy the Next.js app to Vercel and point `DATABASE_URL` at a hosted Postgres instance. Run migrations in CI or a release step (`prisma migrate deploy`). Never commit secrets.
+HomeSpace helps you keep your own notes. It does not provide insurance, valuation, or legal advice.
 
-## Docs
-
-- [ARCHITECTURE.md](ARCHITECTURE.md)
-- [DECISIONS.md](DECISIONS.md)
-- [TESTING.md](TESTING.md)
-- [AGENTS.md](AGENTS.md)
-- [AI_ENGINEERING.md](AI_ENGINEERING.md)
+- Replacement totals are **your figures × quantity**. They are not a professional valuation and they are not a guaranteed market value.
+- Printed and CSV reports are summaries of what you entered. They are not insurance documents and they do not file a claim.
+- Keep real household inventories on an account you control. Do not put personal property records into the shared demo login.
